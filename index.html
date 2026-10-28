@@ -727,6 +727,26 @@ section h2 .dk-t::after{content:"";display:inline-block;width:.07em;height:.85em
 .dk-hid{opacity:0!important;transform:translateY(16px)!important;filter:blur(10px)!important;transition:none!important}
 @keyframes hkcaret{50%{opacity:0}}
 @keyframes hkbob{50%{transform:translateY(7px)}}
+
+/* PHONE POLISH: floating controls stop covering content (phones/tablets only; desktop untouched) */
+@media(max-width:960px){
+  .dwrap,.totop{display:none!important}
+  .wa-float{width:54px;height:54px;right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom))}
+  .wa-float svg{width:28px;height:28px}
+  .wa-float span{display:none}
+  .wrap,.hero .wrap,.hwheel{width:min(var(--w),100% - 40px)}
+  /* keep the last lines of each section clear of the WhatsApp bubble */
+  section{padding-bottom:84px}
+  #problem .acc{padding-bottom:0}
+}
+@media(max-width:380px){
+  .panel{padding:18px 16px 16px}
+  .hero h1{font-size:1.5rem}
+  .btn{font-size:.95rem}
+  .cbox .btn{--pad:14px 14px;font-size:.9rem;gap:6px}
+}
+/* back-to-top arrow (bottom left) removed */
+.totop{display:none!important}
 </style>
 <script>document.documentElement.classList.add("hk-on")</script>
 </head>
@@ -779,19 +799,19 @@ section h2 .dk-t::after{content:"";display:inline-block;width:.07em;height:.85em
   <div class="acc" id="acc">
     <article class="ap on" tabindex="0" role="button" aria-expanded="true">
       <img src="assets/problem/1.png" alt="Coordinating employee government processes" loading="lazy" decoding="async" onerror="this.remove()">
-      <div class="ag"><div class="hd"><div class="tt"><span class="num">01</span><h3>Coordination</h3></div><span class="pl-i" aria-hidden="true"></span></div><div class="x"><div><p>Coordination pulls management attention away from core operations.</p></div></div></div>
+      <div class="ag"><div class="hd"><div class="tt"><h3>Coordination</h3></div><span class="pl-i" aria-hidden="true"></span></div><div class="x"><div><p>Coordination pulls management attention away from core operations.</p></div></div></div>
     </article>
     <article class="ap" tabindex="0" role="button" aria-expanded="false">
       <img src="assets/problem/2.png" alt="Following through on documents and applications" loading="lazy" decoding="async" onerror="this.remove()">
-      <div class="ag"><div class="hd"><div class="tt"><span class="num">02</span><h3>Follow-through</h3></div><span class="pl-i" aria-hidden="true"></span></div><div class="x"><div><p>Documents and applications need follow-through at every stage.</p></div></div></div>
+      <div class="ag"><div class="hd"><div class="tt"><h3>Follow-through</h3></div><span class="pl-i" aria-hidden="true"></span></div><div class="x"><div><p>Documents and applications need follow-through at every stage.</p></div></div></div>
     </article>
     <article class="ap" tabindex="0" role="button" aria-expanded="false">
       <img src="assets/problem/3.png" alt="Tracking visa, permit and document dates" loading="lazy" decoding="async" onerror="this.remove()">
-      <div class="ag"><div class="hd"><div class="tt"><span class="num">03</span><h3>Date tracking</h3></div><span class="pl-i" aria-hidden="true"></span></div><div class="x"><div><p>Visa, permit and document dates have to be monitored.</p></div></div></div>
+      <div class="ag"><div class="hd"><div class="tt"><h3>Date tracking</h3></div><span class="pl-i" aria-hidden="true"></span></div><div class="x"><div><p>Visa, permit and document dates have to be monitored.</p></div></div></div>
     </article>
     <article class="ap" tabindex="0" role="button" aria-expanded="false">
       <img src="assets/problem/4.png" alt="Choosing between in-house and outsourced PRO support" loading="lazy" decoding="async" onerror="this.remove()">
-      <div class="ag"><div class="hd"><div class="tt"><span class="num">04</span><h3>Your decision</h3></div><span class="pl-i" aria-hidden="true"></span></div><div class="x"><div><p>You decide: handle it in-house, or outsource it.</p></div></div></div>
+      <div class="ag"><div class="hd"><div class="tt"><h3>Your decision</h3></div><span class="pl-i" aria-hidden="true"></span></div><div class="x"><div><p>You decide: handle it in-house, or outsource it.</p></div></div></div>
     </article>
   </div>
 </section>
