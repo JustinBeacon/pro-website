@@ -325,6 +325,8 @@ footer{min-height:0;display:block;padding:16px 0 12px}
 /* HOW: progress wheel + step photo */
 #how{--glass:rgba(255,255,255,.62);--glass-edge:rgba(255,255,255,.8);position:relative;overflow:hidden;justify-content:center;background:linear-gradient(135deg,#eaf3ff 0%,#fff 55%,#fff1e6 100%)}
 #how h2{max-width:min(920px,100%);margin-inline:auto}
+#team h2{max-width:min(920px,100%);margin-inline:auto}
+#team h2,#how h2{text-wrap:balance}
 .hwheel{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(28px,6vw,96px);align-items:center;width:min(var(--w),100% - 40px);margin:clamp(24px,5vh,56px) auto 0}
 .wheel{position:relative;width:min(400px,86vw);aspect-ratio:1;justify-self:center;--dur:3000ms}
 .wheel svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
@@ -450,7 +452,8 @@ footer{scroll-snap-align:end;scroll-snap-stop:always}
 }
 
 /* SECTION DOTS */
-.dots{position:fixed;right:14px;top:50%;translate:0 -50%;z-index:80;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 7px;border-radius:999px;background:rgba(255,255,255,.58);border:1px solid rgba(255,255,255,.85);-webkit-backdrop-filter:blur(14px) saturate(1.6);backdrop-filter:blur(14px) saturate(1.6);box-shadow:0 10px 30px rgba(0,50,120,.14),inset 0 1px 0 rgba(255,255,255,.9)}
+.dwrap{position:fixed;right:14px;top:50%;translate:0 -50%;z-index:80;display:flex;flex-direction:column;align-items:center;gap:14px;transition:opacity .4s}
+.dots{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 7px;border-radius:999px;background:rgba(255,255,255,.58);border:1px solid rgba(255,255,255,.85);-webkit-backdrop-filter:blur(14px) saturate(1.6);backdrop-filter:blur(14px) saturate(1.6);box-shadow:0 10px 30px rgba(0,50,120,.14),inset 0 1px 0 rgba(255,255,255,.9)}
 .dots button{position:relative;width:16px;height:16px;padding:0;border:0;background:none;cursor:pointer;display:grid;place-items:center;transition:height .45s var(--ease)}
 .dots button::before{content:"";width:8px;height:8px;border-radius:99px;background:rgba(0,74,173,.3);transition:height .45s var(--ease),background .3s,transform .3s}
 .dots button:hover::before{background:var(--blue);transform:scale(1.25)}
@@ -458,9 +461,26 @@ footer{scroll-snap-align:end;scroll-snap-stop:always}
 .dots button[aria-current=true]::before{height:22px;background:var(--orange);transform:none}
 .dots button span{position:absolute;right:calc(100% + 14px);top:50%;translate:0 -50%;padding:6px 13px;border-radius:999px;background:rgba(255,255,255,.9);border:1px solid var(--line);box-shadow:0 8px 20px rgba(0,50,120,.12);color:var(--blue);font:600 .8rem Inter,sans-serif;white-space:nowrap;opacity:0;transform:translateX(6px);pointer-events:none;transition:opacity .3s,transform .4s var(--ease)}
 .dots button:hover span,.dots button:focus-visible span{opacity:1;transform:none}
+/* up / down arrows at the ends of the pill */
+.dots .nv{width:24px;height:24px;color:var(--blue);transition:opacity .3s,color .3s}
+.dots .nv::before{display:none}
+.dots .nv svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--ease)}
+.dots .nv:hover{color:var(--orange)}
+.dots .nv.up:hover svg{transform:translateY(-2px)}
+.dots .nv.dn:hover svg{transform:translateY(2px)}
+.dots .nv:disabled{opacity:.22;pointer-events:none}
+/* big "back to the hero" button under the pill */
+.dtop{width:52px;height:52px;padding:0;border:0;border-radius:50%;cursor:pointer;display:grid;place-items:center;color:#fff;background:var(--orange);box-shadow:0 12px 28px rgba(255,107,0,.4);transition:opacity .4s,transform .5s var(--ease),box-shadow .3s}
+.dtop svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.dtop:hover{transform:translateY(-3px) scale(1.06);box-shadow:0 16px 34px rgba(255,107,0,.5)}
+.dtop.hide{opacity:0;transform:translateY(10px) scale(.9);pointer-events:none}
 @media(hover:none){.dots button span{display:none}}
 @media(max-width:960px){
-  .dots{right:4px;gap:2px;padding:8px 3px}
+  .dwrap{right:4px;gap:10px}
+  .dtop{width:44px;height:44px}
+  .dtop svg{width:22px;height:22px}
+  .dots{gap:2px;padding:8px 3px}
+  .dots .nv{width:20px;height:20px}
   .dots button{width:14px;height:14px}
   .dots button::before{width:6px;height:6px}
   .dots button[aria-current=true]{height:26px}
@@ -671,14 +691,51 @@ nav{transition:background .5s,border-color .5s,transform .45s cubic-bezier(.65,0
 nav.nav-gone{transform:translateY(-160%);opacity:0;visibility:hidden;pointer-events:none;transition:background .5s,border-color .5s,transform .45s cubic-bezier(.65,0,.35,1),opacity .35s,visibility 0s .45s}
 /* while a "jump to section" runs: no snapping or smooth-scroll fighting the jump */
 html.jumping{scroll-snap-type:none!important;scroll-behavior:auto!important}
+
+/* SUBSCRIBE + FOOTER = exactly one screen (footer height is measured by script into --foot) */
+#quote{min-height:calc(100vh - var(--foot,150px));min-height:calc(100svh - var(--foot,150px))}
+@media(min-width:961px){
+  #quote{display:flex;flex-direction:column;justify-content:center;padding-block:clamp(72px,9vh,100px) clamp(20px,4vh,44px)}
+  #quote .final-grid{align-items:center}
+  #quote h2{font-size:clamp(2.6rem,min(5.2vw,9.5vh),4.8rem);line-height:1.04}
+  #quote .lead{font-size:clamp(1.15rem,min(1.9vw,3.1vh),1.55rem);margin-top:clamp(14px,2.4vh,26px)}
+  #quote .cta-l .cbox{max-width:560px;margin-top:clamp(20px,3.4vh,36px);padding:clamp(24px,4vh,40px) clamp(24px,2.8vw,36px);gap:clamp(12px,1.8vh,18px)}
+  #quote .cbox .btn{--pad:clamp(16px,2.3vh,22px) 28px;font-size:clamp(1.05rem,1.3vw,1.2rem)}
+  #quote .mfr iframe{height:clamp(320px,52vh,600px)}
+  #quote .addr{font-size:clamp(.9rem,1.1vw,1rem)}
+}
+
+/* HOOK SLIDE: typed opening screen (added) */
+#hook{min-height:100svh;padding:110px 0 100px;display:grid;align-items:center;background:var(--mist);text-align:center}
+#hook h2{position:relative;font-size:clamp(2.1rem,5.6vw,4.6rem);max-width:20ch;margin-inline:auto}
+#hook .g{visibility:hidden}
+#hook .t{position:absolute;inset:0;text-align:center}
+#hook .t::after{content:"";display:inline-block;width:.07em;height:.9em;margin-left:.08em;background:var(--orange);vertical-align:-.08em;animation:hkcaret 1s steps(1) infinite}
+#hook .hint{margin-top:44px;font-size:.95rem;font-weight:600;color:var(--blue-soft);opacity:0;transition:opacity .8s}
+#hook .hint.on{opacity:1}
+#hook .hint i{display:block;margin:8px auto 0;font-style:normal;font-size:1.3rem;color:var(--orange);animation:hkbob 1.6s ease-in-out infinite}
+nav{transition:background .5s,border-color .5s,opacity .5s,transform .7s var(--ease),visibility .5s}
+.hk-on nav.hk-hide{opacity:0;visibility:hidden;transform:translateY(-130%);pointer-events:none}
+html{scroll-snap-type:none!important;scroll-behavior:auto!important}
+#pt{display:none!important}
+#dkx{position:fixed;inset:0;z-index:9999;pointer-events:none;overflow:hidden}
+/* typed section headings: problem, services, how, pricing, team, faq */
+section h2.dk-ty{position:relative}
+section h2.dk-ty .w{visibility:hidden}
+section h2 .dk-t{position:absolute;left:0;top:0;width:100%;letter-spacing:0;white-space:pre-line}
+section h2 .dk-t::after{content:"";display:inline-block;width:.07em;height:.85em;margin-left:.08em;background:var(--orange);vertical-align:-.06em;animation:hkcaret 1s steps(1) infinite}
+.dk-hid{opacity:0!important;transform:translateY(16px)!important;filter:blur(10px)!important;transition:none!important}
+@keyframes hkcaret{50%{opacity:0}}
+@keyframes hkbob{50%{transform:translateY(7px)}}
 </style>
+<script>document.documentElement.classList.add("hk-on")</script>
 </head>
 <body>
 <div class="progress" id="bar"></div>
 <div class="vwrap" id="vwrap" aria-hidden="true"><video id="heroVid" autoplay muted loop playsinline preload="auto" tabindex="-1"><source src="assets/hero.mp4" type="video/mp4"></video></div>
 <a class="wa-float" href="https://wa.me/971547775023?text=Hello%20BEACON%2C%20I%27d%20like%20to%20subscribe%20to%20BEACON%20PRO%20Services." target="_blank" rel="noopener" aria-label="Chat with BEACON on WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span>Chat with us</span></a>
 
-<nav id="nav" aria-label="Main">
+<nav id="nav" class="hk-hide" aria-label="Main">
   <a class="brand" href="#top" aria-label="BEACON UAE home"><img src="assets/logo.png" alt="BEACON UAE" width="120" height="34"></a>
   <div class="links" id="links">
     <a href="#services">Services</a><a href="#how">How It Works</a><a href="#pricing">Pricing</a><a href="#reviews">Reviews</a><a href="#team">Team</a><a href="#faq">FAQs</a>
@@ -689,12 +746,20 @@ html.jumping{scroll-snap-type:none!important;scroll-behavior:auto!important}
 </nav>
 
 <main id="top">
+<!-- HOOK SLIDE (added) -->
+<section id="hook" class="has-mesh" aria-label="Introduction"><div class="mesh" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="wrap">
+    <h2 aria-label="Need fast, hassle-free licenses, government paperwork, and visas?"><span class="g" aria-hidden="true">Need fast, hassle-free licenses, government paperwork, and visas?</span><span class="t" aria-hidden="true">Need fast, hassle-free licenses, government paperwork, and visas?</span></h2>
+    <p class="hint" id="hkHint"><span id="hkHintTxt">Scroll, tap or press Space</span><i aria-hidden="true">↓</i></p>
+  </div>
+</section>
+
 <!-- HERO -->
-<header class="hero">
+<header class="hero" id="hero">
   <img class="duo" src="assets/kyhero.png" alt="The BEACON UAE PRO services team" fetchpriority="high" decoding="async" width="2000" height="1414">
   <div class="wrap">
     <div class="panel">
-      <h1 data-split data-d="150">Fast, Hassle-Free <span class="shimmer">Licenses,</span> Government Paperwork, and Visas.</h1>
+      <h1 data-split data-d="150"><span class="shimmer">Faster Approvals. Zero Paperwork Hassle.</span></h1>
       <p class="lead rv" style="--d:900ms">Get a dedicated corporate PRO team to manage your company renewals, visas, and approvals, at a fraction of the cost of hiring in-house.</p>
       <div class="cta-row rv" style="--d:1100ms">
         <a class="btn magnetic" href="#pricing">See Plans &amp; Pricing <span class="arr">→</span></a>
@@ -733,14 +798,15 @@ html.jumping{scroll-snap-type:none!important;scroll-behavior:auto!important}
 
 <!-- SOLUTION -->
 <section id="services"><div class="wrap">
-  <h2 data-split>PRO Support That Keeps Your Government-Related Processes Moving.</h2>
+  <h2 data-split>High-Speed PRO Support. Zero Business Downtime.</h2>
   <p class="lead rv">BEACON helps coordinate your agreed PRO and government-related employee administration, so you don't manage every step internally.</p>
   <div class="morph"><div class="mlist" id="mlist"><div class="mi rv on" style="--d:0ms"><button aria-expanded="true" aria-controls="md0" data-i="0"><span class="ico"><svg width="24" height="24" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg></span>Employment Visa & Work Permits</button><div class="d" id="md0"><div><p>Support with applicable employment visa, work-permit and related government processes.</p></div></div></div><div class="mi rv" style="--d:60ms"><button aria-expanded="false" aria-controls="md1" data-i="1"><span class="ico"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg></span>Medical & Emirates ID</button><div class="d" id="md1"><div><p>Help coordinating applicable medical examinations, biometrics and Emirates ID procedures.</p></div></div></div><div class="mi rv" style="--d:120ms"><button aria-expanded="false" aria-controls="md2" data-i="2"><span class="ico"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M8 3h8l4 4v14H8z"/><path d="M16 3v4h4M11 13h5M11 17h5"/></svg></span>Labour & Immigration Documents</button><div class="d" id="md2"><div><p>Support with relevant government-related employee documents and processes.</p></div></div></div><div class="mi rv" style="--d:180ms"><button aria-expanded="false" aria-controls="md3" data-i="3"><span class="ico"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-3-6.2M20 4v5h-5"/></svg></span>Visa & Permit Renewals</button><div class="d" id="md3"><div><p>Help coordinating applicable renewals, subject to the agreed service scope.</p></div></div></div><div class="mi rv" style="--d:240ms"><button aria-expanded="false" aria-controls="md4" data-i="4"><span class="ico"><svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg></span>Employee Cancellations</button><div class="d" id="md4"><div><p>Support with cancellation and offboarding-related government procedures.</p></div></div></div><div class="mi rv" style="--d:300ms"><button aria-expanded="false" aria-controls="md5" data-i="5"><span class="ico"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M3 21h18M5 21V10l7-6 7 6v11M9 21v-6h6v6"/></svg></span>Government Application Coordination</button><div class="d" id="md5"><div><p>Help coordinating application steps and required documentation.</p></div></div></div><div class="mi rv" style="--d:360ms"><button aria-expanded="false" aria-controls="md6" data-i="6"><span class="ico"><svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg></span>PRO Administrative Support</button><div class="d" id="md6"><div><p>Support for agreed PRO-related tasks and government-facing requirements.</p></div></div></div><div class="mi rv" style="--d:420ms"><button aria-expanded="false" aria-controls="md7" data-i="7"><span class="ico"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M3 7h7l2 3h9v9H3z"/></svg></span>Employee Documentation Coordination</button><div class="d" id="md7"><div><p>Help organising documents connected to government processes.</p></div></div></div></div><div class="stage" id="stage" aria-hidden="true"><div class="slide on"><img src="assets/services/1.jpg" alt="Employment Visa & Work Permits" loading="lazy" decoding="async" onerror="this.remove()"><div class="cap">Employment Visa & Work Permits</div></div><div class="slide"><img src="assets/services/2.jpg" alt="Medical & Emirates ID" loading="lazy" decoding="async" onerror="this.remove()"><div class="cap">Medical & Emirates ID</div></div><div class="slide"><img src="assets/services/3.jpg" alt="Labour & Immigration Documents" loading="lazy" decoding="async" onerror="this.remove()"><div class="cap">Labour & Immigration Documents</div></div><div class="slide"><img src="assets/services/4.jpg" alt="Visa & Permit Renewals" loading="lazy" decoding="async" onerror="this.remove()"><div class="cap">Visa & Permit Renewals</div></div><div class="slide"><img src="assets/services/5.jpg" alt="Employee Cancellations" loading="lazy" decoding="async" onerror="this.remove()"><div class="cap">Employee Cancellations</div></div><div class="slide"><img src="assets/services/6.jpg" alt="Government Application Coordination" loading="lazy" decoding="async" onerror="this.remove()"><div class="cap">Government Application Coordination</div></div><div class="slide"><img src="assets/services/7.jpg" alt="PRO Administrative Support" loading="lazy" decoding="async" onerror="this.remove()"><div class="cap">PRO Administrative Support</div></div><div class="slide"><img src="assets/services/8.jpg" alt="Employee Documentation Coordination" loading="lazy" decoding="async" onerror="this.remove()"><div class="cap">Employee Documentation Coordination</div></div></div></div>
 </div></section>
 
 <!-- HOW -->
 <section id="how" aria-label="How it works">
-  <div class="wrap center hhead"><h2 data-split>Straightforward PRO Support, <br>From the First Conversation.</h2></div>
+  <div class="wrap center hhead"><h2 data-split>PRO Support Done Right.</h2>
+    <p class="lead rv">Complete Clarity and Total Results from the First Minute.</p></div>
   <div class="hwheel">
     <div class="wheel" id="wheel" role="tablist" aria-label="Steps">
       <svg viewBox="0 0 360 360" aria-hidden="true"><circle class="wdisc" cx="180" cy="180" r="118"/><circle class="wspin" cx="180" cy="180" r="106"/><g id="wtracks"></g><g id="wfills"></g></svg>
@@ -784,7 +850,8 @@ html.jumping{scroll-snap-type:none!important;scroll-behavior:auto!important}
 
 <!-- TEAM -->
 <section id="team"><div class="wrap center">
-  <h2 data-split>The Team Behind Your PRO Support.</h2>
+  <h2 data-split>Your Corporate PRO Powerhouse.</h2>
+  <p class="lead rv">Back your business with senior PRO veterans who know the exact pathways to fast-track every visa, trade license, and ministry approval.</p>
   <div class="roster" id="roster">
     <article class="tm rv on" tabindex="0" role="button" aria-expanded="true" aria-label="Kinga Judit Szabo, CEO & Founder">
       <div class="tph"><span class="ini" aria-hidden="true">KS</span><img src="assets/team/kinga.png" alt="Kinga Judit Szabo, CEO &amp; Founder" loading="lazy" decoding="async" onerror="this.remove()"><div class="tcap"><b class="nm">Kinga Judit Szabo</b><span class="rl">CEO & Founder</span></div></div>
@@ -917,10 +984,15 @@ function countUp(root){root.querySelectorAll("[data-count]").forEach(el=>{
 
 /* nav, progress, active link */
 const nav=document.getElementById("nav"),bar=document.getElementById("bar");
+const footEl=document.querySelector("footer");
+const setFoot=()=>document.documentElement.style.setProperty("--foot",footEl.offsetHeight+"px");
+setFoot();addEventListener("resize",setFoot);addEventListener("load",setFoot);
+document.fonts&&document.fonts.ready.then(setFoot);
 const heroEl=document.querySelector("header.hero");
 const heroNav=()=>{
-  nav.classList.toggle("on-hero",scrollY<innerHeight*.5);
-  const gone=scrollY>heroEl.offsetHeight*.5;
+  const hr=heroEl.getBoundingClientRect(),onHero=hr.top<=innerHeight*.5&&hr.bottom>innerHeight*.5;   /* hero is no longer at the top of the page, so measure it where it is */
+  nav.classList.toggle("on-hero",onHero);
+  const gone=!onHero;
   if(gone!==nav.classList.contains("nav-gone")){
     nav.classList.toggle("nav-gone",gone);
     if(gone){const b=document.getElementById("burger");if(b&&b.getAttribute("aria-expanded")==="true")b.click()}
@@ -937,71 +1009,184 @@ links.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>setMenu(fa
 addEventListener("keydown",e=>{if(e.key==="Escape")setMenu(false)});
 
 
-/* paged scrolling (desktop): wheel / keys move exactly one section; tall sections scroll through first */
+/* SLIDE ENGINE (added): the page never visibly scrolls between sections. Each section arrives with its own transition. */
 (function(){
-  const mq=matchMedia("(min-width:961px)");
-  const pages=[document.querySelector("header.hero"),...["problem","services","how","pricing","reviews","team","faq","quote"].map(id=>document.getElementById(id))];
-  let busy=false,pause=false,lastT=0,lastD=0;
-  const maxY=()=>document.documentElement.scrollHeight-innerHeight;
-  const tops=()=>{const m=maxY();return pages.map((el,i)=>(i===pages.length-1&&mq.matches)?m:Math.min(m,Math.round(el.getBoundingClientRect().top+scrollY)))};
-  const cur=T=>{let k=0;T.forEach((t,i)=>{if(t<=scrollY+innerHeight*.5)k=i});return k};
-  const to=y=>scrollTo({top:y,behavior:RM?"instant":"smooth"});
-  function lock(){busy=true;pause=true;setTimeout(()=>{busy=false},850)}
-  function step(d){
-    const T=tops(),i=cur(T),y=scrollY,vh=innerHeight;
-    const last=i===pages.length-1,top=T[i],bottom=last?top+vh:top+pages[i].offsetHeight;
-    if(d>0&&y+vh<bottom-64){to(Math.min(bottom-vh,y+Math.round(vh*.6)));return}
-    if(d<0&&y>top+2){to(Math.max(top,y-Math.round(vh*.6)));return}
-    const n=i+d;if(n<0||n>=T.length)return;
-    lock();to(T[n]);
-  }
-  function inner(e){
-    for(let el=e.target;el&&el!==document.body;el=el.parentElement){
-      if(el.scrollHeight>el.clientHeight+1){
-        const o=getComputedStyle(el).overflowY;
-        if(o==="auto"||o==="scroll"){const dy=e.deltaY;if((dy>0&&el.scrollTop+el.clientHeight<el.scrollHeight-1)||(dy<0&&el.scrollTop>0))return true}
-      }
+  const doc=document.documentElement;
+  const S=["hook","hero","problem","services","how","pricing","reviews","team","faq","quote"].map(i=>document.getElementById(i)).concat(document.querySelector("footer"));
+  const N=S.length;
+  let ci=0,busy=false,pause=false,lastT=0,lastD=0,mx=innerWidth/2,my=innerHeight/2;
+  const maxY=()=>doc.scrollHeight-innerHeight;
+  const top=i=>Math.round(S[i].getBoundingClientRect().top+scrollY);
+  const lo=i=>Math.min(top(i),maxY());
+  const hi=i=>Math.max(lo(i),Math.min(top(i)+S[i].offsetHeight-innerHeight,maxY()));
+  const wait=ms=>new Promise(r=>setTimeout(r,ms));
+
+  /* one soft transition for every section: the page blurs and quiets, we move, then it comes back into focus */
+  const X=document.createElement("div");X.id="dkx";X.setAttribute("aria-hidden","true");document.body.appendChild(X);
+  const veil=document.createElement("div");veil.style.cssText="position:absolute;inset:0;display:none;will-change:backdrop-filter,background-color";X.appendChild(veil);
+  const VF=(b,a)=>({backdropFilter:`blur(${b}px)`,webkitBackdropFilter:`blur(${b}px)`,backgroundColor:`rgba(246,248,252,${a})`});
+  const cover=()=>veil.animate([VF(0,0),VF(28,.55)],{duration:520,easing:"cubic-bezier(.4,0,.2,1)",fill:"forwards"}).finished;
+  const lift=()=>veil.animate([VF(28,.55),VF(0,0)],{duration:800,easing:"cubic-bezier(.22,1,.36,1)",fill:"forwards"}).finished;
+
+  /* dots: where you are, and a tap to jump */
+  const names=["Home","Why BEACON","Services","How it works","Pricing","Reviews","Team","FAQs","Subscribe"];
+  const dots=document.createElement("div");dots.className="dots";dots.id="dots";dots.setAttribute("role","group");dots.setAttribute("aria-label","Sections");
+  dots.innerHTML=`<button type="button" class="nv up" data-dir="-1" aria-label="Previous section"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>`
+    +names.map((n,i)=>`<button type="button" data-i="${i}" aria-label="Go to ${n}"><span>${n}</span></button>`).join("")
+    +`<button type="button" class="nv dn" data-dir="1" aria-label="Next section"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>`;
+  const wrap=document.createElement("div");wrap.className="dwrap";wrap.id="dwrap";
+  const big=document.createElement("button");big.type="button";big.className="dtop hide";big.id="dtop";big.title="Back to the top";big.setAttribute("aria-label","Back to the top");
+  big.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12M12 20V9M6 14l6-6 6 6"/></svg>';
+  wrap.append(dots,big);document.body.appendChild(wrap);
+  const db=[...dots.querySelectorAll("button[data-i]")],upB=dots.querySelector(".up"),dnB=dots.querySelector(".dn");
+  const mark=()=>{db.forEach((b,k)=>{if(k===ci-1)b.setAttribute("aria-current","true");else b.removeAttribute("aria-current")});
+    upB.disabled=ci<=1;dnB.disabled=ci>=N-1;big.classList.toggle("hide",ci<=1);
+    wrap.style.opacity=ci===0?"0":"";wrap.style.pointerEvents=ci===0?"none":""};
+  mark();
+  dots.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
+    if(b.dataset.dir){step(+b.dataset.dir,{x:e.clientX,y:e.clientY});return}
+    go(+b.dataset.i+1,{x:e.clientX,y:e.clientY})});
+  big.addEventListener("click",e=>go(1,{x:e.clientX,y:e.clientY}));
+
+  /* moving */
+  const land=n=>{ci=n;scrollTo({top:lo(n),behavior:"instant"});mark()};
+  /* typed sections: the headline types itself, then the rest of the section settles in
+     (problem, services, how it works, pricing, team, FAQs; not reviews/gallery or the final CTA) */
+  let stopTyping=()=>{};
+  const TYPED=new Set([2,3,4,5,7,8]);
+  function prepType(sec){
+    const h=sec.querySelector("h2");if(!h)return null;
+    /* everything in the section that is not the heading or the background mesh */
+    const rest=[];
+    for(let n=h;n&&n!==sec;n=n.parentElement){
+      [...n.parentElement.children].forEach(c=>{if(c!==n&&!c.classList.contains("mesh")&&!/^(SCRIPT|STYLE)$/.test(c.tagName))rest.push(c)});
     }
-    return false;
+    /* heading text, keeping any <br> line breaks */
+    let full="";
+    (function walk(n){n.childNodes.forEach(c=>{if(c.nodeType===3)full+=c.textContent;else if(c.nodeName==="BR")full+="\n";else walk(c)})})(h);
+    full=full.replace(/[ \t\r]+/g," ").replace(/ ?\n ?/g,"\n").trim();
+    h.classList.add("in","dk-ty");rest.forEach(r=>r.classList.add("dk-hid"));
+    const ty=document.createElement("span");ty.className="dk-t";ty.setAttribute("aria-hidden","true");h.appendChild(ty);
+    let k=0,timer=null,done=false;
+    const release=soft=>{
+      rest.forEach((r,i)=>{r.style.transition=soft?`opacity 1s ease ${i*160}ms,transform 1.1s cubic-bezier(.22,1,.36,1) ${i*160}ms,filter 1s ease ${i*160}ms`:"none";r.classList.remove("dk-hid")});
+      setTimeout(()=>rest.forEach(r=>{r.style.transition=""}),soft?1600+rest.length*160:50);
+    };
+    const finish=soft=>{
+      if(done)return;done=true;clearTimeout(timer);
+      ty.remove();h.classList.remove("dk-ty");release(soft);stopTyping=()=>{};
+    };
+    stopTyping=()=>finish(false);
+    return {start(){
+      timer=setTimeout(function f(){
+        ty.textContent=full.slice(0,++k);
+        if(k<full.length)timer=setTimeout(f,22+Math.random()*18);else timer=setTimeout(()=>finish(true),330);
+      },320);
+    }};
   }
+
+  /* if the page was moved by something other than the engine (scrollbar drag, find-in-page, momentum), re-learn which section we are really in */
+  function resync(){
+    const y=scrollY;if(y>=lo(ci)-4&&y<=hi(ci)+4)return;
+    const mid=y+innerHeight/2;let k=ci;
+    for(let i=0;i<N;i++){if(top(i)<=mid)k=i}
+    ci=k;mark();
+  }
+  async function go(n,pt){
+    if(!busy)resync();
+    n=Math.max(0,Math.min(N-1,n));
+    if(busy||n===ci)return;
+    busy=true;pause=true;
+    stopTyping();
+    if(RM){land(n);setTimeout(()=>{busy=false},120);return}
+    veil.style.display="block";
+    try{
+      await cover();
+      document.querySelectorAll('img[loading="lazy"]').forEach(i=>{i.loading="eager"});
+      land(n);
+      const arr=TYPED.has(n)?prepType(S[n]):null;
+      await wait(140);
+      for(let k=0;k<2;k++){if(Math.abs(lo(n)-scrollY)>2)scrollTo({top:lo(n),behavior:"instant"});await wait(70)}
+      const up=lift();
+      if(arr)arr.start();
+      await up;
+    }finally{veil.style.display="none";setTimeout(()=>{busy=false},120)}
+  }
+  function step(d,pt){
+    if(busy)return;
+    resync();
+    const y=scrollY,vh=innerHeight,sm=RM?"instant":"smooth";
+    if(d>0&&y<hi(ci)-6){scrollTo({top:Math.min(hi(ci),y+vh*.7),behavior:sm});return}      /* tall section: read on first */
+    if(d<0&&y>lo(ci)+6){scrollTo({top:Math.max(lo(ci),y-vh*.7),behavior:sm});return}
+    go(d>0&&ci===N-1?1:ci+d,pt);   /* at the very end, moving on loops back to the hero */
+  }
+
+  /* wheel */
+  const scroller=el=>{for(;el&&el!==document.body;el=el.parentElement){if(el.scrollHeight>el.clientHeight+1){const o=getComputedStyle(el).overflowY;if(o==="auto"||o==="scroll")return el}}return null};
+  const inner=e=>{const el=scroller(e.target);if(!el)return false;const dy=e.deltaY;return (dy>0&&el.scrollTop+el.clientHeight<el.scrollHeight-1)||(dy<0&&el.scrollTop>0)};
+  addEventListener("pointermove",e=>{mx=e.clientX;my=e.clientY},{passive:true});
   addEventListener("wheel",e=>{
-    if(!mq.matches||e.ctrlKey)return;
+    if(e.ctrlKey)return;
     if(inner(e))return;
     e.preventDefault();
     const now=performance.now(),mag=Math.abs(e.deltaY),gap=now-lastT,accel=mag>lastD*1.6&&mag>30;
     lastT=now;lastD=mag;
-    if(mag<4)return;
+    if(mag<4||busy)return;
+    const d=e.deltaY>0?1:-1,y=scrollY;
+    if(d>0&&y<hi(ci)-2){scrollTo({top:Math.min(hi(ci),y+e.deltaY),behavior:"instant"});pause=true;return}
+    if(d<0&&y>lo(ci)+2){scrollTo({top:Math.max(lo(ci),y+e.deltaY),behavior:"instant"});pause=true;return}
     if(pause){if(gap>110||accel)pause=false;else return}
-    if(busy)return;
-    step(e.deltaY>0?1:-1);
+    go(d>0&&ci===N-1?1:ci+d);
   },{passive:false});
+
+  /* touch: swipe up/down moves a section; tall sections scroll first, and never run into their neighbour */
+  let ty=null,tx=0,fit=false,skipSwipe=false;
+  addEventListener("touchstart",e=>{const t=e.touches[0];ty=t.clientY;tx=t.clientX;fit=hi(ci)<=lo(ci)+2;skipSwipe=!!(e.target.closest&&e.target.closest("#rs,.mapbox,iframe"))||!!scroller(e.target)},{passive:true});
+  addEventListener("touchmove",e=>{if(fit&&!skipSwipe&&e.cancelable)e.preventDefault()},{passive:false});
+  addEventListener("touchend",e=>{
+    if(ty===null)return;const t=e.changedTouches[0],dy=t.clientY-ty,dx=t.clientX-tx;ty=null;
+    if(skipSwipe||busy||Math.abs(dy)<50||Math.abs(dy)<Math.abs(dx))return;
+    const d=dy<0?1:-1;
+    if(d>0&&scrollY<hi(ci)-4)return;if(d<0&&scrollY>lo(ci)+4)return;
+    go(d>0&&ci===N-1?1:ci+d);
+  });
+  addEventListener("scroll",()=>{if(busy)return;const y=scrollY,h=hi(ci),l=lo(ci);if(y>h+1)scrollTo({top:h,behavior:"instant"});else if(y<l-1)scrollTo({top:l,behavior:"instant"})},{passive:true});
+
+  /* keys, clicks, links, focus */
+  const SKIP="a,button,input,textarea,select,summary,label,iframe,video,nav,[contenteditable],[role=button],[role=tab],[role=slider],[data-noslide],#rs,.mapbox,.wa-float,[tabindex]:not([tabindex='-1'])";
   addEventListener("keydown",e=>{
-    if(!mq.matches||e.defaultPrevented||e.altKey||e.ctrlKey||e.metaKey)return;
-    const t=e.target,tag=t.tagName;
-    if(/^(INPUT|TEXTAREA|SELECT)$/.test(tag)||t.isContentEditable)return;
+    if(e.defaultPrevented||e.altKey||e.ctrlKey||e.metaKey)return;
+    if(e.target.closest&&e.target.closest(SKIP))return;
     const k=e.key;let d=0;
-    if(k==="ArrowDown"||k==="PageDown")d=1;
+    if(k===" ")d=e.shiftKey?-1:1;
+    else if(k==="Enter"||k==="ArrowDown"||k==="PageDown")d=1;
     else if(k==="ArrowUp"||k==="PageUp")d=-1;
-    else if(k===" "&&!/^(BUTTON|A)$/.test(tag))d=e.shiftKey?-1:1;
-    else if(k==="Home"||k==="End"){e.preventDefault();if(!busy){lock();const T=tops();to(k==="Home"?0:T[T.length-1])}return}
+    else if(k==="Home"){e.preventDefault();go(0);return}
+    else if(k==="End"){e.preventDefault();go(N-1);return}
     if(!d)return;
-    e.preventDefault();if(!busy)step(d);
+    e.preventDefault();step(d);
   });
-  /* section dots: where you are, and a tap to jump (all screen sizes) */
-  const names=["Home","Why BEACON","Services","How it works","Pricing","Reviews","Team","FAQs","Subscribe"];
-  const dots=document.createElement("div");dots.className="dots";dots.id="dots";dots.setAttribute("role","group");dots.setAttribute("aria-label","Sections");
-  dots.innerHTML=names.map((n,i)=>`<button type="button" data-i="${i}" aria-label="Go to ${n}"><span>${n}</span></button>`).join("");
-  document.body.appendChild(dots);
-  const db=[...dots.children];let shown=-1,ticking=false;
-  const mark=()=>{ticking=false;const i=cur(tops());if(i===shown)return;shown=i;db.forEach((b,k)=>{if(k===i)b.setAttribute("aria-current","true");else b.removeAttribute("aria-current")})};
-  addEventListener("scroll",()=>{if(!ticking){ticking=true;requestAnimationFrame(mark)}},{passive:true});
-  addEventListener("resize",mark);mark();
-  dots.addEventListener("click",e=>{
-    const b=e.target.closest("button");if(!b)return;
-    const i=+b.dataset.i;lock();to(tops()[i]);
-    /* content above can change height while we travel (e.g. the services list), so settle on the exact top */
-    setTimeout(()=>{const t=tops()[i],off=Math.abs(scrollY-t);if(off>3&&off<200)scrollTo({top:t,behavior:"instant"})},1100);
+  let down=null;
+  addEventListener("pointerdown",e=>{down=[e.clientX,e.clientY]});
+  document.addEventListener("click",e=>{
+    if(!e.isTrusted||e.defaultPrevented||e.button)return;
+    const a=e.target.closest&&e.target.closest('a[href^="#"]');
+    if(a){
+      const id=a.getAttribute("href").slice(1);if(!id)return;
+      const t=id==="top"?S[1]:document.getElementById(id);if(!t)return;
+      const i=S.findIndex(x=>x===t||x.contains(t));if(i<0)return;
+      e.preventDefault();if(i!==ci)go(i,{x:e.clientX,y:e.clientY});return;
+    }
+    if(down&&Math.hypot(e.clientX-down[0],e.clientY-down[1])>10)return;
+    if(String(getSelection()))return;
+    const b=document.getElementById("burger");if(b&&b.getAttribute("aria-expanded")==="true")return;
+    for(let n=e.target;n&&n.nodeType===1&&n!==doc;n=n.parentElement){
+      if(n.matches(SKIP)||getComputedStyle(n).cursor==="pointer")return;   /* buttons, accordions and cards you can click keep working */
+    }
+    step(1,{x:e.clientX,y:e.clientY});
   });
+  addEventListener("focusin",e=>{if(busy||!e.target.closest)return;const i=S.findIndex(x=>x.contains(e.target));if(i>=0&&i!==ci)go(i)});
+  addEventListener("resize",()=>{if(!busy)scrollTo({top:Math.min(Math.max(scrollY,lo(ci)),hi(ci)),behavior:"instant"})});
 })();
 
 /* FAQ chat */
@@ -1075,45 +1260,6 @@ if(fine){
 const v=document.getElementById("heroVid"),vw=document.getElementById("vwrap");
 v.querySelector("source").addEventListener("error",()=>vw.remove());
 if(RM){v.removeAttribute("autoplay");v.pause()}else v.play().catch(()=>{});
-
-/* paper + blur transition when jumping between sections (skipped for the footer / reduced motion) */
-(function(){
-  if(RM)return;
-  const pt=document.getElementById("pt"),bl=pt.querySelector(".bl"),sh=pt.querySelector(".sh");
-  let busy=false;
-  const run=(el,kf,o)=>el.animate(kf,{fill:"forwards",...o}).finished;
-  document.addEventListener("click",async e=>{
-    const a=e.target.closest('a[href^="#"]');
-    if(!a||e.defaultPrevented||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;
-    const id=a.getAttribute("href").slice(1),t=id&&document.getElementById(id);
-    if(!t||t.tagName==="FOOTER"||t.closest("footer"))return;   // footer keeps normal scrolling
-    e.preventDefault();
-    if(busy)return;busy=true;
-    const root=document.documentElement;
-    document.querySelectorAll('img[loading="lazy"]').forEach(i=>{i.loading="eager"});   // so late-loading images can't shift the target
-    const ease="cubic-bezier(.65,0,.35,1)";
-    pt.classList.add("on");
-    await Promise.all([
-      run(bl,[{opacity:0},{opacity:1}],{duration:380,easing:"ease-out"}),
-      run(sh,[{transform:"translateY(100%)"},{transform:"translateY(0)"}],{duration:560,easing:ease})
-    ]);
-    root.classList.add("jumping");
-    t.scrollIntoView({behavior:"instant",block:"start"});
-    history.pushState(null,"","#"+id);
-    /* layout above the target can still change (images, accordions): re-aim until it holds still */
-    for(let k=0;k<6;k++){
-      await new Promise(r=>setTimeout(r,100));
-      const off=t.getBoundingClientRect().top;
-      if(Math.abs(off)>2)scrollBy({top:off,behavior:"instant"});
-    }
-    root.classList.remove("jumping");
-    await Promise.all([
-      run(sh,[{transform:"translateY(0)"},{transform:"translateY(-100%)"}],{duration:620,easing:ease}),
-      run(bl,[{opacity:1},{opacity:0}],{duration:560,easing:"ease-in",delay:80})
-    ]);
-    pt.classList.remove("on");busy=false;
-  });
-})();
 
 /* problem: photo accordion */
 (function(){
@@ -1319,6 +1465,39 @@ if(RM){v.removeAttribute("autoplay");v.pause()}else v.play().catch(()=>{});
     el.addEventListener("pointermove",e=>{const r=el.getBoundingClientRect();ry(((e.clientX-r.left)/r.width-.5)*6);rx(((e.clientY-r.top)/r.height-.5)*-6)});
     el.addEventListener("pointerleave",()=>{rx(0);ry(0)});
   });
+})();
+</script>
+<script>
+/* typed intro + slide-style navigation (added) */
+(function(){
+  var reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
+  var T=document.querySelector("#hook .t"),hint=document.getElementById("hkHint");
+  var full=T.textContent;
+  if(matchMedia("(hover:none)").matches)document.getElementById("hkHintTxt").textContent="Tap anywhere to continue";
+  function done(){hint.classList.add("on")}
+  if(reduce){done()}else{
+    T.textContent="";var k=0;
+    setTimeout(function f(){T.textContent=full.slice(0,++k);if(k<full.length)setTimeout(f,25+Math.random()*20);else setTimeout(done,450)},550);
+  }
+
+  /* nav shows on the hero and ONLY on the hero */
+  var nav=document.getElementById("nav"),heroEl=document.getElementById("hero");
+  function navState(){var r=heroEl.getBoundingClientRect(),m=innerHeight*.5;nav.classList.toggle("hk-hide",!(r.top<=m&&r.bottom>m))}
+  addEventListener("scroll",navState,{passive:true});addEventListener("resize",navState);
+
+  /* every visit starts on the pre-hero */
+  if("scrollRestoration" in history)history.scrollRestoration="manual";
+  function toStart(){
+    if(location.hash)history.replaceState(null,"",location.pathname+location.search);
+    scrollTo({top:0,behavior:"instant"});navState();
+  }
+  var touched=false;
+  ["wheel","touchstart","keydown","pointerdown"].forEach(function(n){addEventListener(n,function(){touched=true},{passive:true,once:true})});
+  function again(){if(!touched)toStart()}
+  toStart();
+  addEventListener("pageshow",function(e){if(!e.persisted)toStart()});
+  addEventListener("load",function(){toStart();setTimeout(again,150);setTimeout(again,600)});
+
 })();
 </script>
 </body>
