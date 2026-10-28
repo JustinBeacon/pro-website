@@ -665,6 +665,12 @@ section h2,#problem h2{max-width:none;font-size:clamp(1.7rem,7.2vw,2.4rem);line-
 .det{width:auto;min-height:0;overflow:hidden;padding:0;transform:none}
 .det p{padding:14px 18px 18px}
 }
+
+/* NAV: hidden once you scroll past the hero */
+nav{transition:background .5s,border-color .5s,transform .45s cubic-bezier(.65,0,.35,1),opacity .35s}
+nav.nav-gone{transform:translateY(-160%);opacity:0;visibility:hidden;pointer-events:none;transition:background .5s,border-color .5s,transform .45s cubic-bezier(.65,0,.35,1),opacity .35s,visibility 0s .45s}
+/* while a "jump to section" runs: no snapping or smooth-scroll fighting the jump */
+html.jumping{scroll-snap-type:none!important;scroll-behavior:auto!important}
 </style>
 </head>
 <body>
@@ -911,7 +917,15 @@ function countUp(root){root.querySelectorAll("[data-count]").forEach(el=>{
 
 /* nav, progress, active link */
 const nav=document.getElementById("nav"),bar=document.getElementById("bar");
-const heroNav=()=>nav.classList.toggle("on-hero",scrollY<innerHeight*.5);
+const heroEl=document.querySelector("header.hero");
+const heroNav=()=>{
+  nav.classList.toggle("on-hero",scrollY<innerHeight*.5);
+  const gone=scrollY>heroEl.offsetHeight*.5;
+  if(gone!==nav.classList.contains("nav-gone")){
+    nav.classList.toggle("nav-gone",gone);
+    if(gone){const b=document.getElementById("burger");if(b&&b.getAttribute("aria-expanded")==="true")b.click()}
+  }
+};
 addEventListener("scroll",heroNav,{passive:true});addEventListener("resize",heroNav);heroNav();
 addEventListener("scroll",()=>{bar.style.transform=`scaleX(${scrollY/(document.body.scrollHeight-innerHeight)})`},{passive:true});
 const secs=[...document.querySelectorAll("section[id]")],als=[...document.querySelectorAll(".links a:not(.btn)")];
@@ -1075,15 +1089,24 @@ if(RM){v.removeAttribute("autoplay");v.pause()}else v.play().catch(()=>{});
     if(!t||t.tagName==="FOOTER"||t.closest("footer"))return;   // footer keeps normal scrolling
     e.preventDefault();
     if(busy)return;busy=true;
+    const root=document.documentElement;
+    document.querySelectorAll('img[loading="lazy"]').forEach(i=>{i.loading="eager"});   // so late-loading images can't shift the target
     const ease="cubic-bezier(.65,0,.35,1)";
     pt.classList.add("on");
     await Promise.all([
       run(bl,[{opacity:0},{opacity:1}],{duration:380,easing:"ease-out"}),
       run(sh,[{transform:"translateY(100%)"},{transform:"translateY(0)"}],{duration:560,easing:ease})
     ]);
+    root.classList.add("jumping");
     t.scrollIntoView({behavior:"instant",block:"start"});
     history.pushState(null,"","#"+id);
-    await new Promise(r=>setTimeout(r,120));
+    /* layout above the target can still change (images, accordions): re-aim until it holds still */
+    for(let k=0;k<6;k++){
+      await new Promise(r=>setTimeout(r,100));
+      const off=t.getBoundingClientRect().top;
+      if(Math.abs(off)>2)scrollBy({top:off,behavior:"instant"});
+    }
+    root.classList.remove("jumping");
     await Promise.all([
       run(sh,[{transform:"translateY(0)"},{transform:"translateY(-100%)"}],{duration:620,easing:ease}),
       run(bl,[{opacity:1},{opacity:0}],{duration:560,easing:"ease-in",delay:80})
