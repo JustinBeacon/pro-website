@@ -747,6 +747,15 @@ section h2 .dk-t::after{content:"";display:inline-block;width:.07em;height:.85em
 }
 /* back-to-top arrow (bottom left) removed */
 .totop{display:none!important}
+
+/* HERO HEADLINE FIX: iOS/iPadOS Safari (and any touch device) can't paint a background-clip:text gradient
+   through the word-by-word animated spans, so the transparent text vanishes. Use solid brand blue there. */
+@media (hover:none),(pointer:coarse),(max-width:960px){
+  .hero h1 .shimmer{background:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;-webkit-text-fill-color:var(--blue)!important;color:var(--blue)!important;animation:none!important}
+}
+@supports (-webkit-touch-callout:none){
+  .hero h1 .shimmer{background:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;-webkit-text-fill-color:var(--blue)!important;color:var(--blue)!important;animation:none!important}
+}
 </style>
 <script>document.documentElement.classList.add("hk-on")</script>
 </head>
