@@ -756,6 +756,25 @@ section h2 .dk-t::after{content:"";display:inline-block;width:.07em;height:.85em
 @supports (-webkit-touch-callout:none){
   .hero h1 .shimmer{background:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;-webkit-text-fill-color:var(--blue)!important;color:var(--blue)!important;animation:none!important}
 }
+
+/* HERO PHOTO (kyhero.png) FIX
+   Tweak these two numbers if you want it bigger/smaller or closer/further from the box. */
+/* phones + iPad portrait: bigger, centred under the panel (hero clips any overflow) */
+@media(max-width:960px){
+  .duo{align-self:center;margin:auto 0 0;width:min(165vw,1100px)}
+}
+@media(max-width:560px){
+  .duo{width:185vw}
+}
+/* iPad landscape / small laptops: smaller and pushed right so it clears the box */
+@media(min-width:961px) and (max-width:1366px) and (orientation:landscape){
+  .duo{height:min(80%,980px);right:-12vw}
+  .panel{max-width:470px}
+}
+/* big iPads held in portrait (wider than 960px but taller than wide) */
+@media(min-width:961px) and (orientation:portrait){
+  .duo{height:min(62%,820px);right:-8vw}
+}
 </style>
 <script>document.documentElement.classList.add("hk-on")</script>
 </head>
